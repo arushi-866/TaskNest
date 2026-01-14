@@ -61,24 +61,22 @@ const TeamView = ({ team, onBack }) => {
     try {
       // Construct a clean payload with whitelist approach
       const payload = {
-        title: taskData.title,
-        description: taskData.description,
-        priority: taskData.priority,
-        status: taskData.status,
-        category: taskData.category,
-        teamId: team._id
+        ...taskData,
+        teamId: String(team._id)
       };
 
       // Only add optional fields if they have valid values
-      if (taskData.assignedTo && taskData.assignedTo !== '' && taskData.assignedTo !== 'null') {
-        payload.assignedTo = typeof taskData.assignedTo === 'object' ? taskData.assignedTo._id : taskData.assignedTo;
+      if (!payload.assignedTo || payload.assignedTo === '' || payload.assignedTo === 'null') {
+        delete payload.assignedTo;
+      } else if (typeof payload.assignedTo === 'object') {
+        payload.assignedTo = payload.assignedTo._id;
       }
-      if (taskData.dueDate && taskData.dueDate !== '' && taskData.dueDate !== 'null') {
-        payload.dueDate = taskData.dueDate;
+      if (!payload.dueDate || payload.dueDate === '' || payload.dueDate === 'null') {
+        delete payload.dueDate;
       }
 
       const newTask = await createTask(payload);
-      setTasks([newTask, ...tasks]);
+      setTasks(prev => [newTask, ...prev]);
       setShowTaskForm(false);
       toast.success('Task created successfully!');
     } catch (error) {
@@ -90,7 +88,7 @@ const TeamView = ({ team, onBack }) => {
   const handleUpdateTask = async (id, taskData) => {
     try {
       const updatedTask = await updateTask(id, taskData);
-      setTasks(tasks.map((task) => (task._id === id ? updatedTask : task)));
+      setTasks(prev => prev.map((task) => (task._id === id ? updatedTask : task)));
       setEditingTask(null);
       setShowTaskForm(false);
       toast.success('Task updated successfully!');
@@ -104,7 +102,7 @@ const TeamView = ({ team, onBack }) => {
     const newStatus = task.status === 'Completed' ? 'Pending' : 'Completed';
     try {
       const updatedTask = await updateTask(task._id, { ...task, status: newStatus });
-      setTasks(tasks.map((t) => (t._id === task._id ? updatedTask : t)));
+      setTasks(prev => prev.map((t) => (t._id === task._id ? updatedTask : t)));
       toast.success(newStatus === 'Completed' ? 'Task completed!' : 'Task re-opened');
     } catch (error) {
       toast.error('Failed to update status');

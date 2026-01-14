@@ -21,7 +21,7 @@ router.use(protect);
 // Task CRUD operations
 router.route('/')
   .get(getTasks)
-  .post(createTaskValidation, createTask);
+  .post(createTask);
 
 router.get('/stats', getTaskStats);
 
