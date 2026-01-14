@@ -7,26 +7,26 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'High':
-        return 'bg-gradient-to-r from-red-100 to-red-50 text-red-700 border-red-200';
+        return 'badge-priority-high';
       case 'Medium':
-        return 'bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 border-yellow-200';
+        return 'badge-priority-medium';
       case 'Low':
-        return 'bg-gradient-to-r from-green-100 to-green-50 text-green-700 border-green-200';
+        return 'badge-priority-low';
       default:
-        return 'bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 border-gray-200';
+        return 'badge-priority-low';
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'Completed':
-        return 'bg-gradient-to-r from-green-100 to-emerald-50 text-green-700 border-green-200';
+        return 'badge-status-completed';
       case 'In Progress':
-        return 'bg-gradient-to-r from-blue-100 to-cyan-50 text-blue-700 border-blue-200';
+        return 'badge-status-progress';
       case 'Pending':
-        return 'bg-gradient-to-r from-gray-100 to-slate-50 text-gray-700 border-gray-200';
+        return 'badge-status-pending';
       default:
-        return 'bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 border-gray-200';
+        return 'badge-status-pending';
     }
   };
 
@@ -61,7 +61,7 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
 
   return (
     <div
-      className={`glass rounded-2xl p-6 transition-all duration-300 hover-lift ${
+      className={`task-card transition-all duration-300 hover-lift ${
         isHovered ? 'shadow-xl' : 'shadow-md'
       } ${task.status === 'Completed' ? 'opacity-90' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
@@ -104,14 +104,14 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
       {/* Badges */}
       <div className="flex flex-wrap gap-2 mb-4">
         <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold border ${getPriorityColor(
+          className={`${getPriorityColor(
             task.priority
           )}`}
         >
           {task.priority} Priority
         </span>
         <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
+          className={`${getStatusColor(
             task.status
           )}`}
         >

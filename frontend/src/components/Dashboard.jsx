@@ -8,6 +8,7 @@ import Tooltip from './Tooltip';
 import Profile from './Profile';
 import { getTasks, createTask, updateTask, deleteTask } from '../utils/api';
 import toast from 'react-hot-toast';
+import TeamDashboard from './TeamDashboard';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -18,10 +19,14 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
   const [searchQuery, setSearchQuery] = useState('');
   const [showStats, setShowStats] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [currentView, setCurrentView] = useState('tasks');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchTasks();
@@ -124,6 +129,22 @@ const Dashboard = () => {
     }
 
     return true;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case 'oldest':
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      case 'priority':
+        const priorityOrder = { High: 3, Medium: 2, Low: 1 };
+        return priorityOrder[b.priority] - priorityOrder[a.priority];
+      case 'dueDate':
+        if (!a.dueDate && !b.dueDate) return 0;
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return new Date(a.dueDate) - new Date(b.dueDate);
+      case 'newest':
+      default:
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    }
   });
 
   const stats = {
@@ -134,100 +155,195 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#9dc4c2]">
+    <div className="min-h-screen bg-[var(--color-bg-secondary)]">
       {/* Navigation */}
-      <nav className="bg-[#9dc4c2] border-b border-[#8ab3b1]/30 sticky top-0 z-50 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-28 gap-4 py-2">
-            <div className="flex items-center space-x-3">
-              <img src="/logo.png" alt="TaskNest" className="h-24 w-24 object-contain" />
-            </div>
-            
-            {/* Search Bar in Navbar */}
-            <div className="flex-1 max-w-lg mx-4">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search tasks by title, description, or category..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-10 py-2.5 border-2 border-white/30 rounded-lg bg-white/80 backdrop-blur-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 focus:bg-white transition-all duration-200"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-white/20 rounded-r-lg transition-colors"
-                  >
-                    <svg className="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
+      <nav className="bg-[var(--color-white)] border-b border-[var(--color-border)] sticky top-0 z-50 backdrop-blur-lg">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 md:h-20 gap-2 md:gap-4 py-2">
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <img src="/logo.png" alt="TaskNest" className="h-10 w-10 md:h-16 md:w-16 object-contain" />
+              <h1 className="hidden md:block text-3xl font-extrabold text-indigo-600 tracking-tight font-sans">TaskNest</h1>
+              <div className="hidden md:flex bg-white/50 rounded-lg p-1 ml-1 md:ml-2">
+                <button
+                  onClick={() => setCurrentView('tasks')}
+                  className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md font-bold text-sm md:text-base transition-all duration-200 ${
+                    currentView === 'tasks' ? 'bg-white shadow text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Tasks
+                </button>
+                <button
+                  onClick={() => setCurrentView('teams')}
+                  className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md text-sm md:text-base font-bold transition-all duration-200 ${
+                    currentView === 'teams' ? 'bg-white shadow text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Teams
+                </button>
               </div>
             </div>
+            
+            <div className="hidden md:flex items-center space-x-1 md:space-x-3">
+              {currentView !== 'teams' && (
+                <>
+                  {/* Search Button */}
+                  <Tooltip text="Search your tasks" position="bottom">
+                    <button
+                      onClick={() => setShowSearch(!showSearch)}
+                      className={`p-1.5 md:p-2.5 hover:bg-white/50 rounded-lg transition-all duration-200 ${showSearch ? 'bg-white/50' : ''}`}
+                    >
+                      <svg className="w-5 h-5 md:w-6 md:h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </button>
+                  </Tooltip>
 
-            <div className="flex items-center space-x-3">
-              {/* Stats Chart Button */}
-              <Tooltip text={showStats ? "Hide Statistics Charts" : "Show Statistics Charts"} position="bottom">
-                <button
-                  onClick={() => setShowStats(!showStats)}
-                  className="p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </button>
-              </Tooltip>
+                  {/* Stats Chart Button */}
+                  <Tooltip text={showStats ? "Hide Statistics Charts" : "Show Statistics Charts"} position="bottom">
+                    <button
+                      onClick={() => setShowStats(!showStats)}
+                      className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200"
+                    >
+                      <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </button>
+                  </Tooltip>
 
-              {/* Filter Button */}
-              <Tooltip text="Filter tasks by status, priority, or category" position="bottom">
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200 relative"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                  </svg>
-                  {(statusFilter !== 'all' || priorityFilter !== 'all' || categoryFilter !== 'all') && (
-                    <span className="absolute top-1 right-1 block h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                  )}
-                </button>
-              </Tooltip>
+                  {/* Filter Button */}
+                  <Tooltip text="Filter tasks by status, priority, or category" position="bottom">
+                    <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200 relative"
+                    >
+                      <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                      </svg>
+                      {(statusFilter !== 'all' || priorityFilter !== 'all' || categoryFilter !== 'all') && (
+                        <span className="absolute top-1 right-1 block h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                      )}
+                    </button>
+                  </Tooltip>
 
-              {/* New Task Button */}
-              <button
-                onClick={() => setShowForm(true)}
-                className="flex items-center space-x-2 px-5 py-2.5 bg-[#7ba8a6] hover:bg-[#6b9896] text-black rounded-lg shadow-md hover:shadow-lg font-medium transition-all duration-300 hover-lift"
-                title="Create a new task"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                <span className="hidden sm:inline">New Task</span>
-              </button>
+                  {/* New Task Button */}
+                  <button
+                    onClick={() => setShowForm(true)}
+                    className="flex items-center space-x-2 btn-primary hover-lift"
+                    title="Create a new task"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span className="hidden sm:inline">New Task</span>
+                  </button>
+                </>
+              )}
 
               {/* Profile Button */}
               <Tooltip text="View Profile" position="bottom">
                 <button
                   onClick={() => setShowProfile(true)}
-                  className="p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200 relative"
+                  className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200 relative"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </button>
               </Tooltip>
             </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                {isMobileMenuOpen ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 px-4 pt-2 pb-4 space-y-4 shadow-lg animate-fade-in">
+            {/* View Toggles */}
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => { setCurrentView('tasks'); setIsMobileMenuOpen(false); }}
+                className={`flex-1 py-2 rounded-md font-bold text-sm transition-all duration-200 ${
+                  currentView === 'tasks' ? 'bg-white shadow text-indigo-600' : 'text-gray-600'
+                }`}
+              >
+                Tasks
+              </button>
+              <button
+                onClick={() => { setCurrentView('teams'); setIsMobileMenuOpen(false); }}
+                className={`flex-1 py-2 rounded-md font-bold text-sm transition-all duration-200 ${
+                  currentView === 'teams' ? 'bg-white shadow text-indigo-600' : 'text-gray-600'
+                }`}
+              >
+                Teams
+              </button>
+            </div>
+
+            {/* Actions */}
+            <div className="grid grid-cols-2 gap-3">
+              {currentView !== 'teams' && (
+                <>
+                  <button
+                    onClick={() => { setShowSearch(!showSearch); setIsMobileMenuOpen(false); }}
+                    className={`flex items-center justify-center space-x-2 p-3 rounded-lg border ${showSearch ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'border-gray-200 text-gray-700'}`}
+                  >
+                    <span>Search</span>
+                  </button>
+                  <button
+                    onClick={() => { setShowStats(!showStats); setIsMobileMenuOpen(false); }}
+                    className={`flex items-center justify-center space-x-2 p-3 rounded-lg border ${showStats ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'border-gray-200 text-gray-700'}`}
+                  >
+                    <span>Stats</span>
+                  </button>
+                  <button
+                    onClick={() => { setShowFilters(!showFilters); setIsMobileMenuOpen(false); }}
+                    className={`flex items-center justify-center space-x-2 p-3 rounded-lg border ${showFilters ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'border-gray-200 text-gray-700'}`}
+                  >
+                    <span>Filters</span>
+                  </button>
+                  <button
+                    onClick={() => { setShowForm(true); setIsMobileMenuOpen(false); }}
+                    className="flex items-center justify-center space-x-2 p-3 rounded-lg bg-indigo-600 text-white shadow-sm"
+                  >
+                    <span>New Task</span>
+                  </button>
+                </>
+              )}
+              <button
+                onClick={() => { setShowProfile(true); setIsMobileMenuOpen(false); }}
+                className={`flex items-center justify-center space-x-2 p-3 rounded-lg border border-gray-200 text-gray-700 ${currentView === 'teams' ? 'col-span-2' : ''}`}
+              >
+                <span>Profile</span>
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {/* Profile Modal */}
+        {showProfile && <Profile onClose={() => setShowProfile(false)} />}
+
+        {currentView === 'teams' ? (
+          <TeamDashboard />
+        ) : (
+          <>
         {/* Welcome Message */}
         <div className="mb-6 animate-fade-in">
           <div className="flex items-center space-x-2 text-xl text-gray-700">
@@ -237,19 +353,19 @@ const Dashboard = () => {
         </div>
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 animate-fade-in">
-          <div className="glass rounded-xl p-4 hover-lift">
+          <div className="dashboard-card p-4 hover-lift">
             <div className="text-sm text-gray-600 mb-1">Total Tasks</div>
             <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
           </div>
-          <div className="glass rounded-xl p-4 hover-lift">
+          <div className="dashboard-card p-4 hover-lift">
             <div className="text-sm text-gray-600 mb-1">Pending</div>
             <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
           </div>
-          <div className="glass rounded-xl p-4 hover-lift">
+          <div className="dashboard-card p-4 hover-lift">
             <div className="text-sm text-gray-600 mb-1">In Progress</div>
             <div className="text-2xl font-bold text-blue-600">{stats.inProgress}</div>
           </div>
-          <div className="glass rounded-xl p-4 hover-lift">
+          <div className="dashboard-card p-4 hover-lift">
             <div className="text-sm text-gray-600 mb-1">Completed</div>
             <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
           </div>
@@ -268,27 +384,73 @@ const Dashboard = () => {
           <p className="text-gray-600">Manage and organize your tasks efficiently</p>
         </div>
 
-        {/* Filters Dropdown */}
-        {showFilters && (
-          <div className="glass rounded-2xl p-6 mb-6 animate-scale-in">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Filters</h3>
-              <button
-                onClick={() => setShowFilters(false)}
-                className="p-1 text-gray-400 hover:text-gray-600"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        {/* Search Bar (Toggled) */}
+        {showSearch && (
+          <div className="mb-6 animate-scale-in">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-              </button>
+              </div>
+              <input
+                type="text"
+                placeholder="Search tasks by title, description, or category..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block ml-8 w-full pl-10 pr-10 py-3 input-field"
+                autoFocus
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center hover:bg-gray-100 rounded-r-lg transition-colors"
+                >
+                  <svg className="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
+          </div>
+        )}
 
-            <div className="space-y-4">
+        {/* Filters Sidebar */}
+        {showFilters && (
+          <div className="fixed right-0 top-16 md:top-20 bottom-0 w-full sm:w-80 bg-white/95 backdrop-blur-xl shadow-2xl p-6 overflow-y-auto border-l border-white/20 animate-fade-in z-40">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-900">Filter Tasks</h3>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="space-y-6">
+              {/* Sort By */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Sort By</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                >
+                  <option value="newest">Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="priority">Priority (High to Low)</option>
+                  <option value="dueDate">Due Date (Earliest First)</option>
+                </select>
+              </div>
+
               {/* Status Filter */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
                 <div className="flex flex-wrap gap-2">
-                  {['all', 'pending', 'in-progress', 'completed'].map((filterOption) => (
+                  {['All', 'pending', 'in-progress', 'completed'].map((filterOption) => (
                     <button
                       key={filterOption}
                       onClick={() => setStatusFilter(filterOption)}
@@ -355,12 +517,13 @@ const Dashboard = () => {
               </div>
 
               {/* Clear All Filters */}
-              {(statusFilter !== 'all' || priorityFilter !== 'all' || categoryFilter !== 'all') && (
+              {(statusFilter !== 'all' || priorityFilter !== 'all' || categoryFilter !== 'all' || sortBy !== 'newest') && (
                 <button
                   onClick={() => {
                     setStatusFilter('all');
                     setPriorityFilter('all');
                     setCategoryFilter('all');
+                    setSortBy('newest');
                   }}
                   className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
                 >
@@ -373,7 +536,7 @@ const Dashboard = () => {
 
         {/* Task Form */}
         {showForm && (
-          <div className="mb-6 animate-scale-in">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4 animate-fade-in">
             <TaskForm
               task={editingTask}
               onSubmit={editingTask ? handleUpdateTask : handleCreateTask}
@@ -381,9 +544,6 @@ const Dashboard = () => {
             />
           </div>
         )}
-
-        {/* Profile Modal */}
-        {showProfile && <Profile onClose={() => setShowProfile(false)} />}
 
         {/* Tasks List */}
         {loading ? (
@@ -417,6 +577,8 @@ const Dashboard = () => {
             onDelete={handleDeleteTask}
             onUpdate={handleUpdateTask}
           />
+        )}
+          </>
         )}
       </main>
     </div>

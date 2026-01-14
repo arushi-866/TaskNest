@@ -30,6 +30,16 @@ const Login = () => {
     try {
       await login(formData.email, formData.password);
       toast.success('Welcome back!');
+      
+      // Check for pending invite
+      const pendingInvite = sessionStorage.getItem('pendingInvite');
+      if (pendingInvite) {
+        const { token, teamId } = JSON.parse(pendingInvite);
+        sessionStorage.removeItem('pendingInvite');
+        navigate(`/accept-invite?token=${token}&teamId=${teamId}`);
+        return;
+      }
+
       navigate('/dashboard');
     } catch (err) {
       const errorData = err.response?.data;
@@ -48,7 +58,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#9dc4c2] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-secondary)] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
@@ -70,7 +80,7 @@ const Login = () => {
           <p className="text-gray-600">Sign in to continue to TaskNest</p>
         </div>
 
-        <div className="glass rounded-2xl shadow-2xl p-8 animate-slide-in">
+        <div className="dashboard-card animate-slide-in">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-lg animate-scale-in">
@@ -93,11 +103,7 @@ const Login = () => {
                     onChange={handleChange}
                     onFocus={() => setFocused({ ...focused, email: true })}
                     onBlur={() => setFocused({ ...focused, email: false })}
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                      focused.email
-                        ? 'border-indigo-500 ring-4 ring-indigo-100'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className="w-full input-field"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -117,11 +123,7 @@ const Login = () => {
                     onChange={handleChange}
                     onFocus={() => setFocused({ ...focused, password: true })}
                     onBlur={() => setFocused({ ...focused, password: false })}
-                    className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                      focused.password
-                        ? 'border-indigo-500 ring-4 ring-indigo-100'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                    className="w-full input-field"
                     placeholder="Enter your password"
                   />
                 </div>
@@ -131,7 +133,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift"
+              className="w-full flex justify-center items-center btn-primary hover-lift"
             >
               {loading ? (
                 <>

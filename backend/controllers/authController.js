@@ -148,9 +148,55 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
+// @desc    Change user password
+// @route   PUT /api/auth/update-password
+// @access  Private
+const updatePassword = async (req, res, next) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!await user.comparePassword(oldPassword)) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid old password'
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password updated successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete user account
+// @route   DELETE /api/auth/profile
+// @access  Private
+const deleteAccount = async (req, res, next) => {
+  try {
+    await User.findByIdAndDelete(req.user.id);
+    
+    res.status(200).json({
+      success: true,
+      message: 'Account deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
   getProfile,
-  updateProfile
+  updateProfile,
+  updatePassword,
+  deleteAccount
 };

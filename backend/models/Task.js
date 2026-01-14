@@ -39,6 +39,14 @@ const taskSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  teamId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team'
+  },
+  assignedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -59,6 +67,8 @@ taskSchema.index({ userId: 1, priority: 1 });
 taskSchema.index({ userId: 1, dueDate: 1 });
 taskSchema.index({ userId: 1, category: 1 });
 taskSchema.index({ userId: 1, createdAt: -1 });
+taskSchema.index({ teamId: 1 });
+taskSchema.index({ assignedTo: 1 });
 
 // Text index for search functionality
 taskSchema.index({ title: 'text', description: 'text', category: 'text' });

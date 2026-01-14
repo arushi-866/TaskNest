@@ -44,7 +44,7 @@ const TaskStats = ({ tasks }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 animate-fade-in">
       {/* Status Distribution Pie Chart */}
-      <div className="glass rounded-2xl p-6 hover-lift">
+      <div className="dashboard-card hover-lift">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Tasks by Status</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -69,7 +69,7 @@ const TaskStats = ({ tasks }) => {
       </div>
 
       {/* Priority Distribution Pie Chart */}
-      <div className="glass rounded-2xl p-6 hover-lift">
+      <div className="dashboard-card hover-lift">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Tasks by Priority</h3>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -95,7 +95,7 @@ const TaskStats = ({ tasks }) => {
 
       {/* Category Bar Chart */}
       {categoryData.length > 0 && (
-        <div className="glass rounded-2xl p-6 hover-lift lg:col-span-2">
+        <div className="dashboard-card hover-lift lg:col-span-2">
           <h3 className="text-lg font-bold text-gray-900 mb-4">Tasks by Category</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={categoryData}>

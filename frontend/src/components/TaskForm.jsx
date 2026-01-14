@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const TaskForm = ({ task, onSubmit, onCancel }) => {
+const TaskForm = ({ task, onSubmit, onCancel, teamMembers }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -8,6 +8,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
     priority: 'Medium',
     status: 'Pending',
     dueDate: '',
+    assignedTo: '',
   });
   const [error, setError] = useState('');
   const [focused, setFocused] = useState({});
@@ -21,6 +22,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
         priority: task.priority || 'Medium',
         status: task.status || 'Pending',
         dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : '',
+        assignedTo: task.assignedTo?._id || task.assignedTo || '',
       });
     }
   }, [task]);
@@ -41,6 +43,11 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
     setFocused({ ...focused, [field]: false });
   };
 
+  const setToday = () => {
+    const today = new Date().toISOString().split('T')[0];
+    setFormData(prev => ({ ...prev, dueDate: today }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -54,6 +61,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
       const submitData = {
         ...formData,
         dueDate: formData.dueDate || undefined,
+        assignedTo: formData.assignedTo || undefined,
       };
 
       if (task) {
@@ -67,12 +75,12 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
   };
 
   return (
-    <div className="glass rounded-2xl shadow-2xl p-8 mb-6 animate-scale-in">
-      <div className="flex items-center justify-between mb-6">
+    <div className="dashboard-card w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
+      <div className="flex justify-between items-start mb-6">
         <div>
-          <h3 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-gray-900">
             {task ? 'Edit Task' : 'Create New Task'}
-          </h3>
+          </h2>
           <p className="text-sm text-gray-600 mt-1">
             {task ? 'Update your task details' : 'Fill in the details to create a new task'}
           </p>
@@ -108,11 +116,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
             onChange={handleChange}
             onFocus={() => handleFocus('title')}
             onBlur={() => handleBlur('title')}
-            className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-              focused.title
-                ? 'border-indigo-500 ring-4 ring-indigo-100'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
+            className="w-full input-field"
             placeholder="Enter task title..."
           />
         </div>
@@ -129,11 +133,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
             onChange={handleChange}
             onFocus={() => handleFocus('description')}
             onBlur={() => handleBlur('description')}
-            className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none resize-none ${
-              focused.description
-                ? 'border-indigo-500 ring-4 ring-indigo-100'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
+            className="w-full input-field resize-none"
             placeholder="Add a detailed description (optional)..."
           />
         </div>
@@ -149,11 +149,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
             onChange={handleChange}
             onFocus={() => handleFocus('category')}
             onBlur={() => handleBlur('category')}
-            className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-              focused.category
-                ? 'border-indigo-500 ring-4 ring-indigo-100'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
+            className="w-full input-field"
           >
             <option value="Work">Work</option>
             <option value="Personal">Personal</option>
@@ -180,11 +176,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
               onChange={handleChange}
               onFocus={() => handleFocus('priority')}
               onBlur={() => handleBlur('priority')}
-              className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                focused.priority
-                  ? 'border-indigo-500 ring-4 ring-indigo-100'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className="w-full input-field"
             >
               <option value="Low">Low Priority</option>
               <option value="Medium">Medium Priority</option>
@@ -203,11 +195,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
               onChange={handleChange}
               onFocus={() => handleFocus('status')}
               onBlur={() => handleBlur('status')}
-              className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                focused.status
-                  ? 'border-indigo-500 ring-4 ring-indigo-100'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className="w-full input-field"
             >
               <option value="Pending">Pending</option>
               <option value="In Progress">In Progress</option>
@@ -216,10 +204,43 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
           </div>
         </div>
 
+        {teamMembers && teamMembers.length > 0 && (
+          <div>
+            <label htmlFor="assignedTo" className="block text-sm font-semibold text-gray-700 mb-2">
+              Assign To
+            </label>
+            <select
+              id="assignedTo"
+              name="assignedTo"
+              value={formData.assignedTo}
+              onChange={handleChange}
+              onFocus={() => handleFocus('assignedTo')}
+              onBlur={() => handleBlur('assignedTo')}
+              className="w-full input-field"
+            >
+              <option value="">Unassigned</option>
+              {teamMembers.map((member) => (
+                <option key={member.user._id} value={member.user._id}>
+                  {member.user.name} ({member.user.email})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div>
-          <label htmlFor="dueDate" className="block text-sm font-semibold text-gray-700 mb-2">
-            Due Date
-          </label>
+          <div className="flex justify-between items-center mb-2">
+            <label htmlFor="dueDate" className="block text-sm font-semibold text-gray-700">
+              Due Date
+            </label>
+            <button
+              type="button"
+              onClick={setToday}
+              className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+            >
+              Set to Today (EOD)
+            </button>
+          </div>
           <input
             type="date"
             id="dueDate"
@@ -228,11 +249,7 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
             onChange={handleChange}
             onFocus={() => handleFocus('dueDate')}
             onBlur={() => handleBlur('dueDate')}
-            className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-              focused.dueDate
-                ? 'border-indigo-500 ring-4 ring-indigo-100'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
+            className="w-full input-field"
           />
         </div>
 
@@ -240,13 +257,13 @@ const TaskForm = ({ task, onSubmit, onCancel }) => {
           <button
             type="button"
             onClick={onCancel}
-            className="px-6 py-3 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
+            className="btn-secondary"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-6 py-3 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 hover-lift"
+            className="btn-primary hover-lift"
           >
             {task ? 'Update Task' : 'Create Task'}
           </button>

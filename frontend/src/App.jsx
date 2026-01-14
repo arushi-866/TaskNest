@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
+import AcceptInvite from './components/AcceptInvite';
 import './App.css';
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="/accept-invite" element={<AcceptInvite />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>

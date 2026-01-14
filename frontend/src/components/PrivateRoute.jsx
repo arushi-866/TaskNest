@@ -7,7 +7,7 @@ const PrivateRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#9dc4c2]">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-secondary)]">
         <Loading message="Loading your workspace..." />
       </div>
     );

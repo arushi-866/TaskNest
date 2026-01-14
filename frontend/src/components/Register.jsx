@@ -57,7 +57,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#9dc4c2] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--color-bg-secondary)] py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse-slow"></div>
@@ -79,7 +79,7 @@ const Register = () => {
           <p className="text-gray-600">Create your account to start managing tasks</p>
         </div>
 
-        <div className="glass rounded-2xl shadow-2xl p-8 animate-slide-in">
+        <div className="dashboard-card animate-slide-in">
           <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 rounded-lg animate-scale-in">
@@ -101,11 +101,7 @@ const Register = () => {
                   onChange={handleChange}
                   onFocus={() => setFocused({ ...focused, name: true })}
                   onBlur={() => setFocused({ ...focused, name: false })}
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                    focused.name
-                      ? 'border-indigo-500 ring-4 ring-indigo-100'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  className="w-full input-field"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -123,11 +119,7 @@ const Register = () => {
                   onChange={handleChange}
                   onFocus={() => setFocused({ ...focused, email: true })}
                   onBlur={() => setFocused({ ...focused, email: false })}
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                    focused.email
-                      ? 'border-indigo-500 ring-4 ring-indigo-100'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  className="w-full input-field"
                   placeholder="you@example.com"
                 />
               </div>
@@ -145,11 +137,7 @@ const Register = () => {
                   onChange={handleChange}
                   onFocus={() => setFocused({ ...focused, password: true })}
                   onBlur={() => setFocused({ ...focused, password: false })}
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                    focused.password
-                      ? 'border-indigo-500 ring-4 ring-indigo-100'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  className="w-full input-field"
                   placeholder="At least 6 characters"
                 />
               </div>
@@ -167,11 +155,7 @@ const Register = () => {
                   onChange={handleChange}
                   onFocus={() => setFocused({ ...focused, confirmPassword: true })}
                   onBlur={() => setFocused({ ...focused, confirmPassword: false })}
-                  className={`w-full px-4 py-3 border-2 rounded-xl transition-all duration-300 focus:outline-none ${
-                    focused.confirmPassword
-                      ? 'border-indigo-500 ring-4 ring-indigo-100'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  className="w-full input-field"
                   placeholder="Re-enter your password"
                 />
               </div>
@@ -180,7 +164,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover-lift"
+              className="w-full flex justify-center items-center btn-primary hover-lift"
             >
               {loading ? (
                 <>

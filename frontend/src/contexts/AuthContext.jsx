@@ -65,12 +65,34 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const updateProfile = async (data) => {
+    const response = await axios.put('/api/auth/profile', data);
+    setUser(response.data.data.user);
+    return response.data;
+  };
+
+  const changePassword = async (oldPassword, newPassword) => {
+    const response = await axios.put('/api/auth/update-password', {
+      oldPassword,
+      newPassword
+    });
+    return response.data;
+  };
+
+  const deleteAccount = async () => {
+    await axios.delete('/api/auth/profile');
+    logout();
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    updateProfile,
+    changePassword,
+    deleteAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

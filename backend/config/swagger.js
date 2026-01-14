@@ -51,7 +51,20 @@ module.exports = {
             userId: { type: 'string' },
             createdAt: { type: 'string', format: 'date-time' },
             updatedAt: { type: 'string', format: 'date-time' },
-            isOverdue: { type: 'boolean' }
+            isOverdue: { type: 'boolean' },
+            teamId: { type: 'string' },
+            assignedTo: { type: 'string' }
+          }
+        },
+        Team: {
+          type: 'object',
+          required: ['name'],
+          properties: {
+            id: { type: 'string' },
+            name: { type: 'string' },
+            description: { type: 'string' },
+            owner: { type: 'string' },
+            members: { type: 'array' }
           }
         },
         Error: {
@@ -225,6 +238,16 @@ module.exports = {
               in: 'query',
               name: 'limit',
               schema: { type: 'integer', default: 100 }
+            },
+            {
+              in: 'query',
+              name: 'teamId',
+              schema: { type: 'string' }
+            },
+            {
+              in: 'query',
+              name: 'filter',
+              schema: { type: 'string', enum: ['assigned', 'created'] }
             }
           ],
           responses: {
@@ -273,7 +296,9 @@ module.exports = {
                     category: { type: 'string' },
                     priority: { type: 'string', enum: ['Low', 'Medium', 'High'] },
                     status: { type: 'string', enum: ['Pending', 'In Progress', 'Completed'] },
-                    dueDate: { type: 'string', format: 'date-time' }
+                    dueDate: { type: 'string', format: 'date-time' },
+                    teamId: { type: 'string' },
+                    assignedTo: { type: 'string' }
                   }
                 }
               }
@@ -408,6 +433,66 @@ module.exports = {
                 }
               }
             }
+          }
+        }
+      },
+      '/api/teams': {
+        get: {
+          tags: ['Teams'],
+          summary: 'Get user teams',
+          security: [{ bearerAuth: [] }],
+          responses: {
+            200: {
+              description: 'Teams retrieved successfully'
+            }
+          }
+        },
+        post: {
+          tags: ['Teams'],
+          summary: 'Create a new team',
+          security: [{ bearerAuth: [] }],
+          requestBody: {
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['name'],
+                  properties: {
+                    name: { type: 'string' },
+                    description: { type: 'string' }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            201: { description: 'Team created successfully' }
+          }
+        }
+      },
+      '/api/teams/{id}/invite': {
+        post: {
+          tags: ['Teams'],
+          summary: 'Invite member to team',
+          security: [{ bearerAuth: [] }],
+          parameters: [{ in: 'path', name: 'id', required: true, schema: { type: 'string' } }],
+          requestBody: {
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['email'],
+                  properties: {
+                    email: { type: 'string', format: 'email' },
+                    role: { type: 'string', enum: ['Admin', 'Member'] }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            200: { description: 'Invitation sent' },
+            403: { description: 'Not authorized' }
           }
         }
       }

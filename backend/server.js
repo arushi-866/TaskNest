@@ -9,6 +9,7 @@ const swaggerDocument = require('./config/swagger');
 
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
+const teamRoutes = require('./routes/teams');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/teams', teamRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
@@ -72,10 +74,10 @@ const connectDB = async (retries = 5) => {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
-      console.log('✅ MongoDB connected successfully');
+      console.log('MongoDB connected successfully');
       return;
     } catch (error) {
-      console.error(`❌ MongoDB connection attempt ${i + 1} failed:`, error.message);
+      console.error(` MongoDB connection attempt ${i + 1} failed:`, error.message);
       if (i < retries - 1) {
         console.log(`Retrying in 5 seconds...`);
         await new Promise(resolve => setTimeout(resolve, 5000));
@@ -101,10 +103,10 @@ const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📚 API Docs: http://localhost:${PORT}/api-docs`);
-    console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
-    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Server running on port ${PORT}`);
+    console.log(`API Docs: http://localhost:${PORT}/api-docs`);
+    console.log(`Health Check: http://localhost:${PORT}/health`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   });
 });
 
