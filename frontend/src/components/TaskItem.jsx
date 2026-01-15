@@ -7,13 +7,13 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'High':
-        return 'badge-priority-high';
+        return 'bg-red-50 text-red-700 border-red-200 ring-red-100';
       case 'Medium':
-        return 'badge-priority-medium';
+        return 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-100';
       case 'Low':
-        return 'badge-priority-low';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-100';
       default:
-        return 'badge-priority-low';
+        return 'bg-gray-50 text-gray-700 border-gray-200 ring-gray-100';
     }
   };
 
@@ -22,11 +22,11 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
       case 'Completed':
         return 'badge-status-completed';
       case 'In Progress':
-        return 'badge-status-progress';
+        return 'bg-blue-50 text-blue-700 border-blue-200 ring-blue-100';
       case 'Pending':
-        return 'badge-status-pending';
+        return 'bg-slate-50 text-slate-600 border-slate-200 ring-slate-100';
       default:
-        return 'badge-status-pending';
+        return 'bg-slate-50 text-slate-600 border-slate-200 ring-slate-100';
     }
   };
 
@@ -61,23 +61,23 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
 
   return (
     <div
-      className={`task-card transition-all duration-300 hover-lift ${
-        isHovered ? 'shadow-xl' : 'shadow-md'
-      } ${task.status === 'Completed' ? 'opacity-90' : ''}`}
+      className={`group relative bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-white/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
+        task.status === 'Completed' ? 'opacity-75 hover:opacity-100' : ''
+      }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-4">
-        <h3 className={`text-lg font-bold text-gray-900 flex-1 pr-2 ${
+        <h3 className={`text-lg font-bold text-gray-800 flex-1 pr-2 leading-tight ${
           task.status === 'Completed' ? 'line-through text-gray-500' : ''
         }`}>
           {task.title}
         </h3>
-        <div className="flex space-x-1">
+        <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <button
             onClick={() => onEdit(task)}
-            className="p-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-all duration-200"
+            className="p-1.5 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition-all duration-200"
             title="Edit task"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@ const TaskItem = ({ task, onEdit, onDelete, onUpdate }) => {
           value={task.status}
           onChange={handleStatusChange}
           disabled={isUpdating}
-          className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-white hover:border-gray-300"
+          className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 bg-white/50 hover:bg-white hover:border-indigo-300 cursor-pointer"
         >
           <option value="Pending">Pending</option>
           <option value="In Progress">In Progress</option>

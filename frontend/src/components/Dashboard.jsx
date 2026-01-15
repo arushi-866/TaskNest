@@ -155,27 +155,27 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-secondary)]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50 selection:bg-indigo-100 selection:text-indigo-900">
       {/* Navigation */}
-      <nav className="bg-[var(--color-white)] border-b border-[var(--color-border)] sticky top-0 z-50 backdrop-blur-lg">
+      <nav className="bg-white/70 border-b border-white/20 sticky top-0 z-50 backdrop-blur-xl shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20 gap-2 md:gap-4 py-2">
             <div className="flex items-center space-x-2 md:space-x-3">
-              <img src="/logo.png" alt="TaskNest" className="h-10 w-10 md:h-16 md:w-16 object-contain" />
-              <h1 className="hidden md:block text-3xl font-extrabold text-indigo-600 tracking-tight font-sans">TaskNest</h1>
+              <img src="/logo.png" alt="TaskNest" className="h-10 w-10 md:h-14 md:w-14 object-contain hover:scale-105 transition-transform duration-300" />
+              <h1 className="hidden md:block text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight font-sans">TaskNest</h1>
               <div className="hidden md:flex bg-white/50 rounded-lg p-1 ml-1 md:ml-2">
                 <button
                   onClick={() => setCurrentView('tasks')}
-                  className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md font-bold text-sm md:text-base transition-all duration-200 ${
-                    currentView === 'tasks' ? 'bg-white shadow text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  className={`px-4 py-2 rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
+                    currentView === 'tasks' ? 'bg-white shadow-md text-indigo-600 scale-105' : 'text-gray-500 hover:text-gray-900 hover:bg-white/30'
                   }`}
                 >
                   Tasks
                 </button>
                 <button
                   onClick={() => setCurrentView('teams')}
-                  className={`px-2 md:px-3 py-1 md:py-1.5 rounded-md text-sm md:text-base font-bold transition-all duration-200 ${
-                    currentView === 'teams' ? 'bg-white shadow text-indigo-600' : 'text-gray-600 hover:text-gray-900'
+                  className={`px-4 py-2 rounded-lg text-sm md:text-base font-bold transition-all duration-300 ${
+                    currentView === 'teams' ? 'bg-white shadow-md text-indigo-600 scale-105' : 'text-gray-500 hover:text-gray-900 hover:bg-white/30'
                   }`}
                 >
                   Teams
@@ -190,7 +190,7 @@ const Dashboard = () => {
                   <Tooltip text="Search your tasks" position="bottom">
                     <button
                       onClick={() => setShowSearch(!showSearch)}
-                      className={`p-1.5 md:p-2.5 hover:bg-white/50 rounded-lg transition-all duration-200 ${showSearch ? 'bg-white/50' : ''}`}
+                      className={`p-2.5 hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 rounded-xl transition-all duration-200 ${showSearch ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : ''}`}
                     >
                       <svg className="w-5 h-5 md:w-6 md:h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -202,7 +202,7 @@ const Dashboard = () => {
                   <Tooltip text={showStats ? "Hide Statistics Charts" : "Show Statistics Charts"} position="bottom">
                     <button
                       onClick={() => setShowStats(!showStats)}
-                      className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200"
+                      className={`p-2.5 hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 rounded-xl transition-all duration-200 ${showStats ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : ''}`}
                     >
                       <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -214,7 +214,7 @@ const Dashboard = () => {
                   <Tooltip text="Filter tasks by status, priority, or category" position="bottom">
                     <button
                       onClick={() => setShowFilters(!showFilters)}
-                      className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200 relative"
+                      className={`p-2.5 hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 rounded-xl transition-all duration-200 relative ${showFilters ? 'bg-indigo-50 text-indigo-600 ring-2 ring-indigo-100' : ''}`}
                     >
                       <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -228,7 +228,7 @@ const Dashboard = () => {
                   {/* New Task Button */}
                   <button
                     onClick={() => setShowForm(true)}
-                    className="flex items-center space-x-2 btn-primary hover-lift"
+                    className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-0.5 font-medium"
                     title="Create a new task"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,7 +243,7 @@ const Dashboard = () => {
               <Tooltip text="View Profile" position="bottom">
                 <button
                   onClick={() => setShowProfile(true)}
-                  className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-white/50 rounded-lg transition-all duration-200 relative"
+                  className="p-1.5 md:p-2.5 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 relative"
                 >
                   <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -347,27 +347,27 @@ const Dashboard = () => {
         {/* Welcome Message */}
         <div className="mb-6 animate-fade-in">
           <div className="flex items-center space-x-2 text-xl text-gray-700">
-            <span className="font-medium">Welcome,</span>
-            <span className="font-bold text-gray-900">{user?.name}</span>
+            <span className="font-medium text-gray-500">Welcome back,</span>
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 text-2xl">{user?.name}</span>
           </div>
         </div>
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 animate-fade-in">
-          <div className="dashboard-card p-4 hover-lift">
-            <div className="text-sm text-gray-600 mb-1">Total Tasks</div>
-            <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
+          <div className="bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300 group">
+            <div className="text-sm font-medium text-gray-500 mb-1 group-hover:text-indigo-600 transition-colors">Total Tasks</div>
+            <div className="text-3xl font-bold text-gray-800">{stats.total}</div>
           </div>
-          <div className="dashboard-card p-4 hover-lift">
-            <div className="text-sm text-gray-600 mb-1">Pending</div>
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+          <div className="bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300 group">
+            <div className="text-sm font-medium text-gray-500 mb-1 group-hover:text-yellow-600 transition-colors">Pending</div>
+            <div className="text-3xl font-bold text-yellow-600">{stats.pending}</div>
           </div>
-          <div className="dashboard-card p-4 hover-lift">
-            <div className="text-sm text-gray-600 mb-1">In Progress</div>
-            <div className="text-2xl font-bold text-blue-600">{stats.inProgress}</div>
+          <div className="bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300 group">
+            <div className="text-sm font-medium text-gray-500 mb-1 group-hover:text-blue-600 transition-colors">In Progress</div>
+            <div className="text-3xl font-bold text-blue-600">{stats.inProgress}</div>
           </div>
-          <div className="dashboard-card p-4 hover-lift">
-            <div className="text-sm text-gray-600 mb-1">Completed</div>
-            <div className="text-2xl font-bold text-green-600">{stats.completed}</div>
+          <div className="bg-white/60 backdrop-blur-sm p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-lg transition-all duration-300 group">
+            <div className="text-sm font-medium text-gray-500 mb-1 group-hover:text-green-600 transition-colors">Completed</div>
+            <div className="text-3xl font-bold text-green-600">{stats.completed}</div>
           </div>
         </div>
 
@@ -380,7 +380,7 @@ const Dashboard = () => {
 
         {/* Header */}
         <div className="mb-6 animate-slide-in">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">My Tasks</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">My Tasks</h2>
           <p className="text-gray-600">Manage and organize your tasks efficiently</p>
         </div>
 
@@ -398,7 +398,7 @@ const Dashboard = () => {
                 placeholder="Search tasks by title, description, or category..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block ml-8 w-full pl-10 pr-10 py-3 input-field"
+                className="block w-full pl-10 pr-10 py-3 bg-white/80 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all shadow-sm"
                 autoFocus
               />
               {searchQuery && (
@@ -450,7 +450,7 @@ const Dashboard = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Status</label>
                 <div className="flex flex-wrap gap-2">
-                  {['All', 'pending', 'in-progress', 'completed'].map((filterOption) => (
+                  {[ 'pending', 'in-progress', 'completed'].map((filterOption) => (
                     <button
                       key={filterOption}
                       onClick={() => setStatusFilter(filterOption)}
@@ -470,7 +470,7 @@ const Dashboard = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Priority</label>
                 <div className="flex flex-wrap gap-2">
-                  {['all', 'High', 'Medium', 'Low'].map((filterOption) => (
+                  {['High', 'Medium', 'Low'].map((filterOption) => (
                     <button
                       key={filterOption}
                       onClick={() => setPriorityFilter(filterOption)}
@@ -564,7 +564,7 @@ const Dashboard = () => {
             {tasks.length === 0 && (
               <button
                 onClick={() => setShowForm(true)}
-                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl font-semibold transition-all duration-300 hover-lift"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-indigo-300 hover:-translate-y-1 font-semibold transition-all duration-300"
               >
                 Create Your First Task
               </button>

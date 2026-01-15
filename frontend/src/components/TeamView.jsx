@@ -126,51 +126,47 @@ const TeamView = ({ team, onBack }) => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start space-x-4 mb-6">
-        <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0">
-          <ArrowLeft className="text-gray-600" size={24} />
+      <div className="flex items-start space-x-4 mb-6 bg-gradient-to-r from-indigo-600 to-purple-600 p-6 sm:p-8 rounded-3xl text-white shadow-lg relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+        <button onClick={onBack} className="p-2 hover:bg-white/20 rounded-full transition-colors flex-shrink-0 text-white">
+          <ArrowLeft size={24} />
         </button>
-        <div className="min-w-0">
+        <div className="min-w-0 relative z-10">
           <div className="flex items-center gap-3 flex-wrap">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 break-words">{team.name}</h2>
-           
+            <h2 className="text-2xl sm:text-3xl font-bold break-words">{team.name}</h2>
           </div>
-          <p className="text-gray-500 text-sm sm:text-base">{team.description}</p>
+          <p className="text-indigo-100 text-sm sm:text-base mt-2 max-w-2xl">{team.description}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto hide-scrollbar">
+      <div className="flex space-x-2 bg-white/50 p-1.5 rounded-xl w-fit mb-6 backdrop-blur-sm border border-white/50">
         <button
           onClick={() => setActiveTab('tasks')}
-          className={`px-4 sm:px-6 py-3 font-medium text-sm transition-colors whitespace-nowrap ${
+          className={`px-4 sm:px-6 py-2.5 font-bold text-sm transition-all duration-200 whitespace-nowrap rounded-lg flex items-center gap-2 ${
             activeTab === 'tasks'
-              ? 'border-b-2 border-indigo-600 text-indigo-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-white text-indigo-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
           }`}
         >
-          <div className="flex items-center space-x-2">
             <CheckSquare size={18} />
             <span>Team Tasks</span>
-          </div>
         </button>
         <button
           onClick={() => setActiveTab('members')}
-          className={`px-4 sm:px-6 py-3 font-medium text-sm transition-colors whitespace-nowrap ${
+          className={`px-4 sm:px-6 py-2.5 font-bold text-sm transition-all duration-200 whitespace-nowrap rounded-lg flex items-center gap-2 ${
             activeTab === 'members'
-              ? 'border-b-2 border-indigo-600 text-indigo-600'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-white text-indigo-600 shadow-sm'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
           }`}
         >
-          <div className="flex items-center space-x-2">
             <Users size={18} />
             <span>Members</span>
-          </div>
         </button>
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/60 p-4 sm:p-6">
         {activeTab === 'members' ? (
           <div className="space-y-8">
             {/* Invite Section */}
@@ -243,7 +239,7 @@ const TeamView = ({ team, onBack }) => {
                   setEditingTask(null);
                   setShowTaskForm(true);
                 }}
-                className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium"
+                className="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:-translate-y-0.5 transition-all text-sm font-medium"
               >
                 <Plus size={16} className="mr-2" />
                 Add Task
@@ -266,8 +262,8 @@ const TeamView = ({ team, onBack }) => {
                 {tasks.map(task => (
                   <div 
                     key={task._id} 
-                    className={`group p-4 border rounded-xl transition-all duration-200 hover:shadow-md flex items-start gap-4 ${
-                      task.status === 'Completed' ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-200'
+                    className={`group p-5 border rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 flex items-start gap-4 ${
+                      task.status === 'Completed' ? 'bg-gray-50/80 border-gray-200' : 'bg-white border-gray-100 hover:border-indigo-100'
                     }`}
                   >
                     {/* Checkbox */}
