@@ -4,15 +4,96 @@
 
 This Task Management System is a comprehensive solution for organizing daily tasks and responsibilities. It provides an intuitive interface for creating, updating, and tracking tasks with features like priority levels, due dates, categories, and real-time statistics.
 
-- **Live Frontend:** https://tasknest-kjyy.onrender.com
-- **Backend API:** https://tasknest-k8mb.onrender.com
-- **API Documentation:** https://tasknest-k8mb.onrender.com/api-docs
-
+- **Live URL:**https://tasknest-kjyy.onrender.com 
 ## Tech Stack
 
 - **Frontend:** React 18, Vite, Tailwind CSS, Lucide React, Context API
 - **Backend:** Node.js, Express.js, Swagger UI
 - **Database:** MongoDB, Mongoose
+
+## Project Structure
+
+```
+backend/
+│
+├── config/
+│   └── swagger.js
+│
+├── controllers/
+│   ├── authController.js
+│   ├── taskController.js
+│   ├── teamController.js
+│   └── teams.js
+│
+├── middleware/
+│   ├── auth.js
+│   ├── errorHandler.js
+│   └── validation.js
+│
+├── models/
+│   ├── Task.js
+│   ├── Team.js
+│   └── User.js
+│
+├── routes/
+│   ├── auth.js
+│   ├── tasks.js
+│   └── teams.js
+│
+├── utils/
+│   └── sendEmail.js
+│
+├── .env
+├── package.json
+├── package-lock.json
+└── server.js
+
+
+frontend/
+│
+├── public/
+│   └── logo.png
+│
+├── src/
+│   ├── components/
+│   │   ├── AcceptInvite.jsx
+│   │   ├── CreateTeamModal.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── JoinTeamModal.jsx
+│   │   ├── Loading.jsx
+│   │   ├── Login.jsx
+│   │   ├── PrivateRoute.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Register.jsx
+│   │   ├── TaskForm.jsx
+│   │   ├── TaskItem.jsx
+│   │   ├── TaskList.jsx
+│   │   ├── TaskStats.jsx
+│   │   ├── TeamDashboard.jsx
+│   │   ├── TeamView.jsx
+│   │   └── Tooltip.jsx
+│   │
+│   ├── contexts/
+│   │   └── AuthContext.jsx
+│   │
+│   ├── services/
+│   │   └── teamService.js
+│   │
+│   ├── utils/
+│   │   └── api.js
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   ├── index.css
+│   └── App.css
+│
+├── index.html
+├── tailwind.config.js
+├── postcss.config.js
+├── vite.config.js
+├── package.json
+└── package-lock.json
+```
 
 ## Setup Instructions
 
@@ -45,7 +126,7 @@ This Task Management System is a comprehensive solution for organizing daily tas
    npm install
    ```
 3. Configure API endpoints:
-   Create a `.env` file or update `src/utils/api.js` with:
+   Create a `.env` file :
    ```
    VITE_API_URL=http://localhost:5000
    ```
@@ -62,6 +143,8 @@ This Task Management System is a comprehensive solution for organizing daily tas
 - **Dashboard & Analytics:** Real-time visualization of task statistics and progress.
 - **Search & Filtering:** Advanced filtering and sorting by status, priority, and category.
 - **Responsive Design:** Fully responsive UI built with Tailwind CSS.
+- **Profile Management:** Users can view and update their profile information.
+- **Interactive UI:** Tooltips, loading states, and smooth transitions for better UX.
 
 ## Challenges and Solutions
 
@@ -72,3 +155,14 @@ This Task Management System is a comprehensive solution for organizing daily tas
 2. **Challenge: Secure Team Invitations**
    Creating a secure way to invite users to teams without exposing sensitive data.
    **Solution:** Developed a token-based invitation system where unique, time-limited tokens are generated and sent via email. These tokens are validated on the backend before granting team membership.
+
+3. **Challenge: Responsive Data Presentation**
+   Displaying complex task data and statistics on mobile devices was challenging.
+   **Solution:** Utilized Tailwind CSS to create a fluid grid system that transforms from multi-column layouts on desktop to stacked card views on mobile, ensuring all features remain accessible.
+
+## Future Scope
+
+- Role-based access control
+- Real-time updates using WebSockets
+- Email and in-app reminders
+- React Native mobile application
