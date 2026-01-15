@@ -9,16 +9,15 @@ module.exports = {
         email: 'support@taskmanager.com'
       }
     },
-    servers: [
-      {
-        url: 'http://localhost:5000',
-        description: 'Development server'
-      },
-      {
-        url: 'https://your-api-url.com',
-        description: 'Production server'
-      }
-    ],
+   servers: [
+  {
+    url: process.env.NODE_ENV === "production"
+      ? "https://tasknest-k8mb.onrender.com"
+      : "http://localhost:5000",
+    description: "Active API server"
+  }
+],
+
     components: {
       securitySchemes: {
         bearerAuth: {
