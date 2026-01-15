@@ -1,193 +1,74 @@
-#  TaskNest
-
+# TaskNest - Task Management System
 
 ## Overview
 
 This Task Management System is a comprehensive solution for organizing daily tasks and responsibilities. It provides an intuitive interface for creating, updating, and tracking tasks with features like priority levels, due dates, categories, and real-time statistics.
 
-**Live Demo:** [Your Deployed App URL]
+- **Live Frontend:** https://tasknest-kjyy.onrender.com
+- **Backend API:** https://tasknest-k8mb.onrender.com
+- **API Documentation:** https://tasknest-k8mb.onrender.com/api-docs
 
+## Tech Stack
 
-## Features
-
-### Core Features
--  **User Authentication**
-  - Secure registration and login with JWT
-  - Password hashing with bcrypt
-  - Protected routes and API endpoints
-  - Persistent authentication with local storage
-
--  **Task Management**
-  - Create, read, update, and delete tasks (Full CRUD)
-  - Task properties: title, description, category, priority, status, due date
-  - Status tracking: Pending, In Progress, Completed
-  - Priority levels: Low, Medium, High
-  - Custom categories/tags
-
-- **Dashboard & Analytics**
-  - Real-time task statistics
-  - Visual cards showing total, completed, in-progress, and overdue tasks
-  - Category and priority breakdowns
-  - Completion rate calculation
-
-- **Advanced Features**
-  - **Search Functionality**: Search tasks by title, description, or category
-  - **Multi-filter Support**: Filter by status, priority, and category
-  - **Pagination**: Efficient handling of large task lists
-  - **Overdue Detection**: Automatic detection and highlighting of overdue tasks
-  - **Responsive Design**: Mobile-first, works seamlessly on all devices
-  - **Loading States**: Smooth user experience with loading indicators
-  - **Error Handling**: Comprehensive error messages and validation
-
-##  Tech Stack
-
-### Frontend
-- **React 18** - Modern UI library with hooks
-- **Vite** - Next-generation frontend tooling
-- **Tailwind CSS** - Utility-first CSS framework
-- **Lucide React** - Beautiful icon library
-- **Context API** - State management
-
-### Backend
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web application framework
-- **MongoDB** - NoSQL database
-- **Mongoose** - ODM for MongoDB
-
-### Security & Utilities
-- **JWT (jsonwebtoken)** - Secure authentication
-- **bcryptjs** - Password hashing
-- **Helmet** - Security headers
-- **CORS** - Cross-origin resource sharing
-- **Morgan** - HTTP request logger
-- **Express Validator** - Request validation
-
-### Development Tools
-- **Nodemon** - Auto-restart development server
-- **Swagger UI** - API documentation
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-
-##  Project Structure
-
-```
-taskNest/
-├── backend/
-│   ├── config/
-│   │   └── swagger.js          # Swagger API documentation
-│   ├── controllers/
-│   │   ├── authController.js   # Authentication logic
-│   │   └── taskController.js   # Task CRUD operations
-│   ├── middleware/
-│   │   ├── auth.js             # JWT verification
-│   │   ├── errorHandler.js     # Error handling
-│   │   └── validation.js       # Request validation
-│   ├── models/
-│   │   ├── User.js             # User schema
-│   │   └── Task.js             # Task schema
-│   ├── routes/
-│   │   ├── auth.js             # Auth routes
-│   │   └── tasks.js            # Task routes
-│   ├── .env                    # Environment variables
-│   ├── .env.example            # Example env file
-│   ├── server.js               # Entry point
-│   └── package.json            # Dependencies
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/         # React components
-│   │   ├── contexts/           # Context providers
-│   │   ├── utils/              # Utility functions
-│   │   ├── App.jsx             # Main app component
-│   │   └── main.jsx            # Entry point
-│   ├── public/                 # Static assets
-│   ├── index.html              # HTML template
-│   ├── vite.config.js          # Vite configuration
-│   ├── tailwind.config.js      # Tailwind configuration
-│   └── package.json            # Dependencies
-│
-└── README.md                   # This file
-```
+- **Frontend:** React 18, Vite, Tailwind CSS, Lucide React, Context API
+- **Backend:** Node.js, Express.js, Swagger UI
+- **Database:** MongoDB, Mongoose
 
 ## Setup Instructions
 
-### Prerequisites
-- Node.js (v16 or higher)
-- MongoDB (local installation or MongoDB Atlas account)
-- npm or yarn package manager
+### Backend
 
-### Backend Setup
-
-1. **Clone the repository**
+1. Clone the repository and navigate to the backend directory:
    ```bash
-   git clone https://github.com/yourusername/task-management-system.git
-   cd task-management-system/backend
+   git clone <repository-url>
+   cd backend
    ```
-
-2. **Install dependencies**
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-3. **Configure environment variables**
+3. Configure environment variables:
+   Create a `.env` file with `MONGODB_URI`, `JWT_SECRET`, and `PORT`.
+4. Start the server:
    ```bash
-   cp .env.example .env
-   ```
-   
- 
-
-4. **Start MongoDB** (if using local installation)
-   ```bash
-   mongod
-   ```
-
-5. **Run the server**
-   ```bash
-   # Development mode with auto-restart
-   npm run dev
-
-   # Production mode
    npm start
    ```
 
-   Server will run on `http://localhost:5000`
+### Frontend
 
-6. **Access API Documentation**
-   Open `http://localhost:5000/api-docs` in your browser
-
-### Frontend Setup
-
-1. **Navigate to frontend directory**
+1. Navigate to the frontend directory:
    ```bash
-   cd ../frontend
+   cd frontend
    ```
-
-2. **Install dependencies**
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-3. **Configure API endpoint**
-   Update the `API_URL` in `src/App.jsx` or create a `.env` file:
-   ```env
-   VITE_API_URL=http://localhost:5000/api
+3. Configure API endpoints:
+   Create a `.env` file or update `src/utils/api.js` with:
    ```
-
-4. **Start development server**
+   VITE_API_URL=http://localhost:5000
+   ```
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-   Frontend will run on `http://localhost:5173`
+## Features Implemented
 
-5. **Build for production**
-   ```bash
-   npm run build
-   ```
- 
+- **User Authentication:** Secure registration and login using JWT and bcrypt.
+- **Task Management:** Full CRUD operations for tasks with priorities, status, and categories.
+- **Team Collaboration:** Create teams, invite members via email, and assign tasks.
+- **Dashboard & Analytics:** Real-time visualization of task statistics and progress.
+- **Search & Filtering:** Advanced filtering and sorting by status, priority, and category.
+- **Responsive Design:** Fully responsive UI built with Tailwind CSS.
 
+## Challenges and Solutions
 
+1. **Challenge: Complex State Management**
+   Managing the state for both personal tasks and team-based tasks within the same dashboard was complex.
+   **Solution:** I implemented a dual-view architecture using React Context for global authentication state and localized state management for the Dashboard and Team views to ensure smooth transitions and data integrity.
 
-
-
-
+2. **Challenge: Secure Team Invitations**
+   Creating a secure way to invite users to teams without exposing sensitive data.
+   **Solution:** Developed a token-based invitation system where unique, time-limited tokens are generated and sent via email. These tokens are validated on the backend before granting team membership.

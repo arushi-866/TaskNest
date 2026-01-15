@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Users, Mail, Shield, User, CheckSquare, Plus, Calendar, Edit2 } from 'lucide-react';
 import teamService from '../services/teamService';
-import { createTask, updateTask } from '../utils/api';
+import { createTask, updateTask, inviteMember } from '../utils/api';
 import toast from 'react-hot-toast';
 import TaskForm from './TaskForm';
 
@@ -49,7 +49,7 @@ const TeamView = ({ team, onBack }) => {
   const handleInvite = async (e) => {
     e.preventDefault();
     try {
-      await teamService.inviteMember(team._id, inviteEmail);
+      await inviteMember(team._id, inviteEmail);
       setInviteEmail('');
       setInviteSuccess(true);
     } catch (error) {

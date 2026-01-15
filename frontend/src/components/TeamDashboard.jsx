@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Plus, ArrowRight, LogIn } from 'lucide-react';
 import teamService from '../services/teamService';
-import { createTask } from '../utils/api';
+import { createTask, inviteMember } from '../utils/api';
 import CreateTeamModal from './CreateTeamModal';
 import JoinTeamModal from './JoinTeamModal';
 import TeamView from './TeamView';
@@ -42,7 +42,7 @@ const TeamDashboard = () => {
       // 2. Invite Members
       if (teamData.members && teamData.members.length > 0) {
         const invitePromises = teamData.members.map(email => 
-          teamService.inviteMember(newTeam._id, email)
+          inviteMember(newTeam._id, email)
             .catch(err => toast.error(`Failed to invite ${email}`))
         );
         await Promise.all(invitePromises);

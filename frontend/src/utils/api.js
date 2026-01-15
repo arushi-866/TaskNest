@@ -49,3 +49,9 @@ export const deleteTask = async (id) => {
   await axios.delete(`/api/tasks/${id}`);
   return { success: true };
 };
+
+export const inviteMember = async (teamId, email) => {
+  setAuthHeader();
+  const response = await axios.post(`/api/teams/${teamId}/invite`, { email });
+  return response.data;
+};
